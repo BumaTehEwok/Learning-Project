@@ -21,16 +21,25 @@ UDoor::UDoor()
 void UDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	OpenDoorForward();
+	
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	//OpenDoorForward();
 	// ...
 	
 }
-int flip = 0;
+
 
 // Called every frame
 void UDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
-
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	{
+		OpenDoorForward();
+	}
+	else
+	{
+		CloseDoor();
+	}
 	// ...
 }
 
@@ -38,7 +47,7 @@ void UDoor::OpenDoorForward()
 {
 	FRotator ActorRotation = Owner->GetActorRotation();
 	
-	ActorRotation.Yaw = 90;
+	ActorRotation.Yaw = OpenRotation;
 	Owner->SetActorRotation(ActorRotation);
 }
 void UDoor::CloseDoor()
