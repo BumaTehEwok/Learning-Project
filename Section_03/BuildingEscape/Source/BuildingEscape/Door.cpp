@@ -11,9 +11,7 @@ UDoor::UDoor()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	Owner = GetOwner();
-	
-
-	// ...
+		// ...
 }
 
 
@@ -23,9 +21,9 @@ void UDoor::BeginPlay()
 	Super::BeginPlay();
 	
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
-	//OpenDoorForward();
-	// ...
-	
+	ClosedRotation = Owner->GetActorRotation().Yaw;
+	OpenRotation = ClosedRotation + OpenRotation;
+		
 }
 
 
@@ -34,7 +32,7 @@ void UDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
 	{
-		OpenDoorForward();
+		OpenDoor(OpenRotation);
 	}
 	else
 	{
@@ -43,22 +41,22 @@ void UDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponent
 	// ...
 }
 
-void UDoor::OpenDoorForward()
+void UDoor::OpenDoor(float Rotation)
 {
-	FRotator ActorRotation = Owner->GetActorRotation();
-	
-	ActorRotation.Yaw = OpenRotation;
-	Owner->SetActorRotation(ActorRotation);
+	if (!IsLocked && Owner->GetActorRotation().Yaw != Rotation)
+	{
+		
+		FRotator ActorRotation = Owner->GetActorRotation();
+		ActorRotation.Yaw = Rotation;
+		Owner->SetActorRotation(ActorRotation);
+	}
 }
 void UDoor::CloseDoor()
 {
-	FRotator ActorRotation = Owner->GetActorRotation();
-	ActorRotation.Yaw = 0;
-	Owner->SetActorRotation(ActorRotation);
-}
-void UDoor::OpenDoorBackward()
-{
-	FRotator ActorRotation = Owner->GetActorRotation();
-	ActorRotation.Yaw = -90;
-	Owner->SetActorRotation(ActorRotation);
+	if (!IsLocked && Owner->GetActorRotation().Yaw != ClosedRotation)
+	{
+		FRotator ActorRotation = Owner->GetActorRotation();
+		ActorRotation.Yaw = ClosedRotation;
+		Owner->SetActorRotation(ActorRotation);
+	}
 }

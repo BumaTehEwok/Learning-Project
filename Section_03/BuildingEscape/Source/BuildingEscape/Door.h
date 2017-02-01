@@ -26,11 +26,15 @@ private:
 		ATriggerVolume* PressurePlate;
 	UPROPERTY(EditAnywhere)
 		float OpenRotation = 90.0f;
+	UPROPERTY(EditAnywhere)
+		bool IsLocked = false;
 	
+	float ClosedRotation = 90.0f;
 	AActor* ActorThatOpens;
 	AActor *Owner;
-	void OpenDoorForward();
+	void OpenDoor(float Rotation);
 	void CloseDoor();
-	void OpenDoorBackward();
+	
+	
 	
 };
